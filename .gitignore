@@ -1,3 +1,5 @@
 .*
 !/.gitignore
 private
+build/
+venv/
