@@ -97,7 +97,7 @@ def extract(path, verbose):
                     recurse(listFolders(folderCountPos + 4, folderCount, f[0] + os.sep))
     
     #Check if this version of Python treats bytes as int or str
-    bytesAre = type(b'a'[0]).__name__    
+    bytesAre = type(b'a'[0]).__name__
 
     #Open the file and read it in.
     with open(path, "rb") as f:
@@ -202,7 +202,7 @@ def build(path, verbose):
     #Create lists to store file and folder pointers to update later.
     folderList = []
     fileList = []
-    
+
     for currentdir, dirlist, filelist in os.walk(path):
         #Filter out files and folder with names that are too long for the format.
         for i in reversed(range(len(filelist))):
@@ -262,9 +262,9 @@ def build(path, verbose):
     
     #Create the output file.
     outFile = path + ".JAM"
-    
+
     #Move the old file out of the way if it exists.
-    if os.path.exists(outFile):
+    if os.path.exists(outFile) and not forceReplace:
         #Move to the first name not taken.
         i = 1
         while os.path.exists(outFile + "." + str(i) + ".bak"):
@@ -278,13 +278,13 @@ def build(path, verbose):
             #File still exists, something went wrong.
             print("ERROR: Failed to move old archive out of the way, archive not written.")
             return False
-    
+
     #Write the archive.
     with open(outFile, "wb") as f:
         f.write(fileData)
-    
-    print("COMPLETE: Achive built.\nOUTPUT: " + outFile)
-    
+
+    print("COMPLETE: Archive built.\nOUTPUT: " + outFile)
+
     return True
 
 #Detect if executable or not.
@@ -297,14 +297,17 @@ else:
 #Preprocess arguments.
 fileList = []
 verbose = False
+forceReplace = False
 for i in range(1, len(sys.argv)):
     arg = sys.argv[i]
     if arg == "--verbose":
         verbose = True
+    elif arg == "--replace":
+        forceReplace = True
     else:
         fileList.append(arg)
 
-#Process files/folders arrordingly or display message.
+#Process files/folders accordingly or display message.
 if len(fileList) > 0:
     for i in fileList:
         if os.path.isfile(i):
